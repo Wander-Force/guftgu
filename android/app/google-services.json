@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "980956954732",
+    "firebase_url": "https://guftgu-cc3c4.firebaseio.com",
+    "project_id": "guftgu-cc3c4",
+    "storage_bucket": "guftgu-cc3c4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:980956954732:android:eed1765f3eb66b83ed9849",
+        "android_client_info": {
+          "package_name": "com.guftgu.guftgu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "980956954732-t89242ughqi6tmhmtdol9as33gpg8uau.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrPqESDf1tZyI5h-4lgLpRE6J-6kxJTUg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "980956954732-t89242ughqi6tmhmtdol9as33gpg8uau.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
