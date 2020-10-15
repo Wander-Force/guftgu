@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:guftgu/chat.dart';
 import 'package:guftgu/login.dart';
+import 'package:guftgu/signUp.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,8 +19,10 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         //'/': (context) => ActionAnimator(),
-        "/": (context) => MyLogin(),
+        "/": (context) => MySignUp(),
+//        "/": (context) => MySignUp(),
         "chat": (context) => MyChat(),
+        "login": (context) => MyLogin(),
       },
     );
   }

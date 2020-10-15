@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+//import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class MyLogin extends StatefulWidget {
   @override
@@ -80,20 +80,20 @@ class _MyLoginState extends State<MyLogin> {
       appBar: AppBar(
         title: Text('Login'),
       ),
-      body: ModalProgressHUD(
-          inAsyncCall: spin,
-          child: Center(
-            child: Container(
-              width: 300,
-              child: Form(
-                key: formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: buildInputs() + buildButtons(),
-                ),
+      body: Builder(builder: (BuildContext context) {
+        return Center(
+          child: Container(
+            width: 300,
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: buildInputs() + buildButtons(),
               ),
             ),
-          )),
+          ),
+        );
+      }),
     );
   }
 
@@ -121,7 +121,7 @@ class _MyLoginState extends State<MyLogin> {
         elevation: 10,
         child: MaterialButton(
             minWidth: 200,
-            height: 50,
+            height: 40,
             child: Text('Login'),
             onPressed: () async {
               setState(() {
