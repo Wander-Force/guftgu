@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:guftgu/chat.dart';
+
+//import 'package:guftgu/chatroom.dart';
 import 'package:guftgu/login.dart';
-import 'package:guftgu/signUp.dart';
+//import 'package:guftgu/chat.dart';
+import 'Test/chatroom2.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,11 +20,13 @@ class MyApp extends StatelessWidget {
       title: "Chat",
       initialRoute: '/',
       routes: {
-        //'/': (context) => ActionAnimator(),
-        "/": (context) => MySignUp(),
-//        "/": (context) => MySignUp(),
-        "chat": (context) => MyChat(),
-        "login": (context) => MyLogin(),
+        "/": (context) => LoginPage(),
+        "chatroom2": (context) => ChatRoom(),
+
+        //------------------------------------------------EXAMPLAR----------------------------------------------->
+        //  "/": (context) => LoginPage(),
+        //   "Home": (context) => ChatRoom(),
+        //   "ChatScreen": (context) => ChatScreen(),
       },
     );
   }

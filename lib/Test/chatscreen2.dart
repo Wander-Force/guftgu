@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+//import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'chatroom.dart';
+//import 'Test/chatroom2.dart';
 import 'package:guftgu/Pages/message_box.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -40,6 +40,7 @@ class _ChatScreenState extends State<ChatScreen> {
       'body': messageBody,
       'time': _date.toString()
     });
+    print('Document Reference is $reference');
   }
 
 //------------------------------------------------------------------------------------>
@@ -185,6 +186,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   sender: snapshot.data.docs[index]['sender'],
                                   time: snapshot.data.docs[index]['time'],
                                   text: snapshot.data.docs[index]['body']);
+                              print('**** MESSAGE: $message');
                               final bool isMe =
                                   message.sender.id == widget.email;
                               return _buildMessage(message, isMe);
