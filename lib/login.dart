@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-//import 'chatroom.dart';
 import 'Test/chatroom2.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -27,8 +26,6 @@ class _LoginPageState extends State<LoginPage> {
   String _name;
   bool status;
   var userID;
-  //var _contact;
-  // var url = "http://127.0.0.1:5000/";
 
   FormType _formType = FormType.login;
 
@@ -63,7 +60,6 @@ class _LoginPageState extends State<LoginPage> {
                     builder: (ctx) => ChatRoom(
                           user: user,
                         )));
-            //Navigator.pushNamed(context, "Home");
           }
         } else {
           dynamic result = await _auth.createUserWithEmailAndPassword(
@@ -86,27 +82,6 @@ class _LoginPageState extends State<LoginPage> {
                           user: user,
                         )));
           }
-
-          // Map details = {
-          //   "name": _name,
-          //   "email": _email,
-          //   "number": _contact,
-          // };
-
-          // try {
-          //   var myJson = json.encode(details);
-          //   print('MYJSON: $myJson');
-
-          //   http.Response response = await http.post(
-          //       'http://10.0.2.2:5000/user/create',
-          //       headers: {"Content-Type": "application/json"},
-          //       body: myJson);
-          //   // await http.get(
-          //   //     'http://10.0.2.2:5000/history/user/5f5a3fc96a092fb97969807b');
-          //   print("RESPONSE: ${response.body}");
-          // } catch (e) {
-          //   print('JSON ERROR: $e');
-          // }
         }
       } catch (e) {
         print('****Error*****: $e');
@@ -148,8 +123,7 @@ class _LoginPageState extends State<LoginPage> {
           padding: EdgeInsets.all(16.0),
           child: SingleChildScrollView(
             child: new Form(
-              key: formKey, //doubt: what is a key?
-
+              key: formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -201,12 +175,6 @@ class _LoginPageState extends State<LoginPage> {
               value.isEmpty ? 'password can\'t be empty' : null,
           onSaved: (value) => _password = value,
         ),
-        // TextFormField(
-        //   decoration: InputDecoration(labelText: "Contact"),
-        //   validator: (value) =>
-        //       value.isEmpty ? 'Please enter your contact' : null,
-        //   onSaved: (value) => _contact = value,
-        // ),
       ];
     }
   }

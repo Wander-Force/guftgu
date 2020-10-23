@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-//import 'Test/chatroom2.dart';
 import 'package:guftgu/Pages/message_box.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -29,8 +27,8 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> addNewMessage() async {
     DateTime _date = DateTime.now();
 
-    DocumentReference reference = FirebaseFirestore()
-        .collection('chatGroups')
+    DocumentReference reference = FirebaseFirestore.instance
+        .collection('chat groups')
         .doc('${widget.chatid}')
         .collection('messages')
         .doc('$_date ${widget.user.email}');
@@ -63,15 +61,15 @@ class _ChatScreenState extends State<ChatScreen> {
           ? EdgeInsets.only(
               top: 8.0,
               bottom: 8.0,
-              left: 80.0,
+              right: 80.0,
             )
-          : EdgeInsets.only(top: 8.0, bottom: 8.0, right: 80.0),
+          : EdgeInsets.only(top: 8.0, bottom: 8.0, left: 80.0),
       padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            message.time,
+            message.time.toString().substring(0, 16),
             style: TextStyle(
                 color: Colors.grey,
                 fontSize: 16.0,
@@ -170,27 +168,32 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   child: StreamBuilder(
                       stream: fireStore
-                          .collection('chatGroups')
+                          .collection('chat groups')
                           .doc('${widget.chatid}')
                           .collection('messages')
                           .snapshots(),
                       builder: (context, snapshot) {
-                        return ListView.builder(
-                            reverse:
-                                true, // to get messages in order- old to new
-                            padding: EdgeInsets.only(top: 15.0),
-                            itemCount: snapshot.data.docs.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              //final Message message = messages[index];
-                              final Message message = new Message(
-                                  sender: snapshot.data.docs[index]['sender'],
-                                  time: snapshot.data.docs[index]['time'],
-                                  text: snapshot.data.docs[index]['body']);
-                              print('**** MESSAGE: $message');
-                              final bool isMe =
-                                  message.sender.id == widget.email;
-                              return _buildMessage(message, isMe);
-                            });
+                        print(snapshot.data.documents.length);
+                        if (snapshot.hasError) {
+                          return CircularProgressIndicator();
+                        } else {
+                          return ListView.builder(
+                              reverse:
+                                  true, // to get messages in order- old to new
+                              padding: EdgeInsets.only(top: 15.0),
+                              itemCount: snapshot.data.docs.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                //final Message message = messages[index];
+                                final Message message = new Message(
+                                    sender: snapshot.data.docs[index]['sender'],
+                                    time: snapshot.data.docs[index]['time'],
+                                    text: snapshot.data.docs[index]['body']);
+                                print('**** MESSAGE: $message');
+                                final bool isMe =
+                                    message.sender == widget.email;
+                                return _buildMessage(message, isMe);
+                              });
+                        }
                       }),
                 ),
               ),

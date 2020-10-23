@@ -1,7 +1,7 @@
 import 'users.dart';
 
 class Message {
-  final User sender;
+  final String sender;
   final String time;
   final String text;
   //final bool isLiked;
