@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:guftgu/chat.dart';
 import 'package:guftgu/login.dart';
-import 'Test/chatroom2.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,9 +17,11 @@ class MyApp extends StatelessWidget {
       title: "Chat",
       initialRoute: '/',
       routes: {
-        "/": (context) => LoginPage(),
-        "chatroom2": (context) => ChatRoom(),
+        //'/': (context) => ActionAnimator(),
+        "/": (context) => MyLogin(),
+        "chat": (context) => MyChat(),
       },
     );
   }
 }
+// Firebase SDK is not synced yet. Also SHA is not set... not sure if it'll be needed or not for chat live stream.

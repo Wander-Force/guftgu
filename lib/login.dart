@@ -1,217 +1,135 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'Test/chatroom2.dart';
+import 'package:flutter/material.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-class LoginPage extends StatefulWidget {
+class MyLogin extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _MyLoginState createState() => _MyLoginState();
 }
 
-final FirebaseAuth _auth = FirebaseAuth.instance;
-var fireStore = FirebaseFirestore.instance;
+var authc = FirebaseAuth.instance;
+//var fireStore = FirebaseFirestore.instance;
 
-//------enumeration---------->
+class _MyLoginState extends State<MyLogin> {
+  final formKey = new GlobalKey<FormState>();
 
-enum FormType { login, register }
-//--------------------------->
-
-class _LoginPageState extends State<LoginPage> {
-  final formKey = new GlobalKey<
-      FormState>(); //since the parent "form" is responsible for textformfield, we have to define a global varibale.
-
-  String _email;
-  String _password;
-  String _name;
-  bool status;
-  var userID;
-
-  FormType _formType = FormType.login;
+  String email;
+  String password;
+  bool spin = false;
 
   bool validateAndSave() {
     final form = formKey.currentState;
     if (form.validate()) {
       form.save();
-      print('Valid');
+      print('*****VALIDATED*****');
       return true;
     }
     return false;
   }
 
-//----------------------------------------------
-//      Validate, Store, Navigate
-//----------------------------------------------
+  //-------------------------------------------->
+  //                Validate, Store, Navigate
+  //-------------------------------------------->
+
   void validateAndSubmit() async {
     if (validateAndSave()) {
       try {
-        if (_formType == FormType.login) {
-          dynamic result = await _auth.signInWithEmailAndPassword(
-              email: _email, password: _password);
-          User user = result.user;
-
-          print('Signed in: ${user.uid}');
-          print('******* USER DETAILS: $user');
-
-          if (user != null) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (ctx) => ChatRoom(
-                          user: user,
-                        )));
-          }
-        } else {
-          dynamic result = await _auth.createUserWithEmailAndPassword(
-              email: _email, password: _password);
-          User user = result.user;
-          fireStore.collection("users").add({
-            "name": _name,
-            "email": _email,
-            //"contact": _contact,
-          }).then((value) => null);
-
-          print('Registered user: ${user.uid}');
-          userID = user.uid;
-
-          if (user != null) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (ctx) => ChatRoom(
-                          user: user,
-                        )));
+        UserCredential userCredential;
+        try {
+          userCredential = await authc.signInWithEmailAndPassword(
+              email: email, password: password);
+        } on FirebaseAuthException catch (e) {
+          if (e.code == 'user not found') {
+            print(
+                'No user such found for the email. Create an accout or try another email');
+          } else if (e.code == 'wrong password') {
+            print('Wrong Password, Try Again.');
           }
         }
+        User user = userCredential.user;
+        print('Signed In : ${user.uid}');
+        if (user != null) {
+          Navigator.pushNamed(context, "chat");
+        }
       } catch (e) {
-        print('****Error*****: $e');
+        print('ERROR: $e');
       }
     }
   }
 
-//---------------------------------------
-//        New User Register
-//---------------------------------------
+  // void userAuthentication() async {
+  //   try {
+  //     var userSignIn = await authc.signInWithEmailAndPassword(
+  //         email: email, password: password);
+  //     print("****** USER ***** $userSignIn");
 
-  void moveToRegister() {
-    formKey.currentState.reset(); //to clear the previous content of the page
-    setState(() {
-      //setState() triggers build again, hence creating the page
-      _formType = FormType.register;
-    });
-  }
-
-  //--------------------------------------
-  //           Login
-  //--------------------------------------
-
-  void moveToLogin() {
-    setState(() {
-      _formType = FormType.login;
-    });
-  }
+  //     if (userSignIn != null) {
+  //       Navigator.pushNamed(context, "chat");
+  //       setState(() {
+  //         spin = false;
+  //       });
+  //     }
+  //   } catch (e) {
+  //     print("**** ERROR **** $e");
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: Text("data"),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Login'),
       ),
-      body: Center(
-        child: Container(
-          margin: EdgeInsets.all(20.0),
-          padding: EdgeInsets.all(16.0),
-          child: SingleChildScrollView(
-            child: new Form(
-              key: formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: buildInputs() + buildSubmitButtons(),
+      body: ModalProgressHUD(
+          inAsyncCall: spin,
+          child: Center(
+            child: Container(
+              width: 300,
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: buildInputs() + buildButtons(),
+                ),
               ),
             ),
-          ),
-        ),
-      ),
+          )),
     );
   }
 
-//--------------------------------------------------------------------
-//                  Inputs
-//--------------------------------------------------------------------
   List<Widget> buildInputs() {
-    if (_formType == FormType.login) {
-      return [
-        TextFormField(
-          keyboardType: TextInputType.emailAddress,
-          decoration: InputDecoration(labelText: "Email"),
-          validator: (value) => value.isEmpty ? 'Email can\'t be empty' : null,
-          onSaved: (value) => _email = value,
-        ),
-        TextFormField(
-          decoration: InputDecoration(labelText: "Password"),
-          obscureText: true,
-          validator: (value) =>
-              value.isEmpty ? 'password can\'t be empty' : null,
-          onSaved: (value) => _password = value,
-        ),
-      ];
-    } else {
-      return [
-        TextFormField(
-          decoration: InputDecoration(labelText: "Name"),
-          validator: (value) => value.isEmpty ? 'Please enter your name' : null,
-          onSaved: (value) => _name = value,
-        ),
-        TextFormField(
-          decoration: InputDecoration(labelText: "Email"),
-          validator: (value) => value.isEmpty ? 'Email can\'t be empty' : null,
-          onSaved: (value) => _email = value,
-        ),
-        TextFormField(
-          decoration: InputDecoration(labelText: "Password"),
-          obscureText: true,
-          validator: (value) =>
-              value.isEmpty ? 'password can\'t be empty' : null,
-          onSaved: (value) => _password = value,
-        ),
-      ];
-    }
+    return [
+      TextFormField(
+        keyboardType: TextInputType.emailAddress,
+        decoration: InputDecoration(labelText: "Email"),
+        validator: (value) => value.isEmpty ? 'Email cannot be empty' : null,
+        onSaved: (value) => email = value,
+      ),
+      TextFormField(
+        decoration: InputDecoration(labelText: "Password"),
+        obscureText: true,
+        validator: (value) => value.isEmpty ? 'Password cannot be empty' : null,
+        onSaved: (value) => password = value,
+      )
+    ];
   }
 
-  //---------------------------------------------------------------------
-  //                    Buttons
-  //---------------------------------------------------------------------
-
-  List<Widget> buildSubmitButtons() {
-    if (_formType == FormType.login) {
-      return [
-        RaisedButton(
-          child: Text("Login"),
-          onPressed: validateAndSubmit,
-        ),
-        FlatButton(
-          onPressed: moveToRegister,
-          child: Text(
-            "New User? Sign up",
-            style: TextStyle(fontSize: 15.0),
-          ),
-        ),
-      ];
-    } else {
-      return [
-        RaisedButton(
-          child: Text("Sign Up"),
-          onPressed: validateAndSubmit,
-        ),
-        FlatButton(
-          onPressed: moveToLogin,
-          child: Text(
-            "Already an account? Login",
-            style: TextStyle(fontSize: 15.0),
-          ),
-        ),
-      ];
-    }
+  List<Widget> buildButtons() {
+    return [
+      Material(
+        color: Colors.amberAccent,
+        elevation: 10,
+        child: MaterialButton(
+            minWidth: 200,
+            height: 50,
+            child: Text('Login'),
+            onPressed: () async {
+              setState(() {
+                spin = true;
+                validateAndSubmit();
+              });
+            }),
+      )
+    ];
   }
 }
